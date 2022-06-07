@@ -1,0 +1,20 @@
+{
+  "name": "wazum/datetime-fractional-seconds",
+  "type": "typo3-cms-extension",
+  "description": "Custom Doctrine type for DATETIME with fractional seconds support",
+  "version": "1.0.0",
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "datetime_fractional_seconds"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Wazum\\DatetimeFractionalSeconds\\": "Classes/"
+    }
+  },
+  "require": {
+    "php": ">=7.4",
+    "typo3/cms-core": "^10.4 || ^11"
+  }
+}
