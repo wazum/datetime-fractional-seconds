@@ -2,7 +2,7 @@
   "name": "wazum/datetime-fractional-seconds",
   "type": "typo3-cms-extension",
   "description": "Custom Doctrine type for DATETIME with fractional seconds support",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "extra": {
     "typo3/cms": {
       "extension-key": "datetime_fractional_seconds"
