@@ -2,10 +2,10 @@
   "name": "wazum/datetime-fractional-seconds",
   "type": "typo3-cms-extension",
   "description": "Custom Doctrine type for DATETIME with fractional seconds support",
-  "version": "1.0.1",
   "extra": {
     "typo3/cms": {
-      "extension-key": "datetime_fractional_seconds"
+      "extension-key": "datetime_fractional_seconds",
+      "cms-package-dir": "{$vendor-dir}/typo3/cms"
     }
   },
   "autoload": {
@@ -14,7 +14,53 @@
     }
   },
   "require": {
-    "php": ">=7.4",
-    "typo3/cms-core": "^10.4 || ^11"
+    "php": "^8.2",
+    "typo3/cms-core": "^11 || ^12"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.13",
+    "slevomat/coding-standard": "^8.8",
+    "squizlabs/php_codesniffer": "^3.7",
+    "vimeo/psalm": "^5.6"
+  },
+  "scripts": {
+    "php-codesniffer": [
+      "./.Build/bin/phpcs -s --standard=./Build/php-codesniffer.xml"
+    ],
+    "php-codesniffer:fix": [
+      "./.Build/bin/phpcbf --standard=./Build/php-codesniffer.xml"
+    ],
+    "php-cs-fixer": [
+      "./.Build/bin/php-cs-fixer fix --dry-run -v --diff --config=./Build/php-cs-fixer.config.php"
+    ],
+    "php-cs-fixer:fix": [
+      "./.Build/bin/php-cs-fixer fix -v --config=./Build/php-cs-fixer.config.php"
+    ],
+    "psalm": [
+      "./.Build/bin/psalm --config=./Build/psalm.xml"
+    ],
+    "lint": [
+      "@psalm",
+      "@php-cs-fixer",
+      "@php-codesniffer"
+    ],
+    "lint:fix": [
+      "@psalm",
+      "@php-cs-fixer:fix",
+      "@php-codesniffer:fix"
+    ]
+  },
+  "config": {
+    "platform": {
+      "php": "8.2"
+    },
+    "allow-plugins": {
+      "typo3/cms-composer-installers": true,
+      "typo3/class-alias-loader": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    },
+    "vendor-dir": ".Build/vendor",
+    "bin-dir": ".Build/bin",
+    "sort-packages": true
   }
 }

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Wazum\DatetimeFractionalSeconds\Core\Database\Types;
 
-class AbstractDateTimeSqlDeclaration
+readonly class AbstractDateTimeSqlDeclaration
 {
     protected function getPrecision($value): int
     {
-        $precision = (int)$value;
+        $precision = (int) $value;
         if ($precision < 1 || $precision > 6) {
             $precision = 0;
         }

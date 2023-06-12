@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Wazum\DatetimeFractionalSeconds\Core\Database\Types;
 
-class MySqlPlatformDateTimeSqlDeclaration extends AbstractDateTimeSqlDeclaration implements DateTimeSqlDeclaration
+readonly class MySqlPlatformDateTimeSqlDeclaration extends AbstractDateTimeSqlDeclaration implements DateTimeSqlDeclaration
 {
     public function getSQLDeclaration(array $column): string
     {

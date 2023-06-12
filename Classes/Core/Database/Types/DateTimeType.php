@@ -10,8 +10,6 @@ use Doctrine\DBAL\Types\ConversionException;
 final class DateTimeType extends \Doctrine\DBAL\Types\DateTimeType
 {
     /**
-     * {@inheritdoc}
-     *
      * @throws ConversionException
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform): string
@@ -20,13 +18,11 @@ final class DateTimeType extends \Doctrine\DBAL\Types\DateTimeType
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @throws ConversionException
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        if ($value === null || $value instanceof \DateTimeInterface) {
+        if (null === $value || $value instanceof \DateTimeInterface) {
             return $value;
         }
 
@@ -37,11 +33,7 @@ final class DateTimeType extends \Doctrine\DBAL\Types\DateTimeType
         }
 
         if (!$dateTime) {
-            throw ConversionException::conversionFailedFormat(
-                $value,
-                $this->getName(),
-                $platform->getDateTimeFormatString()
-            );
+            throw ConversionException::conversionFailedFormat($value, $this->getName(), $platform->getDateTimeFormatString());
         }
 
         return $dateTime;

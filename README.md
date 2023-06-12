@@ -57,3 +57,15 @@ public function __invoke(SomethingHappened $event): void
     );
 }
 ```
+
+## Possible problems
+
+### Extending `ConnectionPool`
+
+This extension extends the Core `ConnectionPool` to get a database connection.
+
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Core\Database\ConnectionPool::class] = [
+        'className' => \Wazum\DatetimeFractionalSeconds\Core\Database\ConnectionPool::class
+    ];
+
+If you use another extension which does the same, you have to handle this yourself.

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Wazum\DatetimeFractionalSeconds\Core\Database\Types;
 
-class PostgreSqlPlatformDateTimeSqlDeclaration extends AbstractDateTimeSqlDeclaration implements DateTimeSqlDeclaration
+readonly class PostgreSqlPlatformDateTimeSqlDeclaration extends AbstractDateTimeSqlDeclaration implements DateTimeSqlDeclaration
 {
     public function getSQLDeclaration(array $column): string
     {
