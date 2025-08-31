@@ -1,0 +1,157 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: PHP ${{ matrix.php }} • TYPO3 ${{ matrix.typo3 }} • Lint
+    runs-on: ubuntu-latest
+    continue-on-error: false
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '8.2', '8.3' ]
+        typo3: [ '^12.4', '^13.0' ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring
+          coverage: none
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache composer
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Validate composer
+        run: composer validate --no-check-publish
+
+      - name: Install dependencies (TYPO3 ${{ matrix.typo3 }})
+        run: |
+          composer require --no-update "typo3/cms-core=${{ matrix.typo3 }}"
+          composer update -W --no-interaction --prefer-dist --no-progress
+
+      - name: Lint (Psalm, PHPCS, PHP-CS-Fixer)
+        run: |
+          if [ -f .Build/vendor/autoload.php ]; then
+            composer run lint
+          else
+            echo "Skipping lint (no vendor installed)"
+          fi
+
+      
+
+  functional:
+    name: Functional • TYPO3 ${{ matrix.typo3 }} • DB ${{ matrix.db }}
+    runs-on: ubuntu-latest
+    continue-on-error: false
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '8.2' ]
+        typo3: [ '^12.4', '^13.0' ]
+        db: [ 'mysql', 'mariadb', 'postgresql' ]
+
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_DATABASE: func
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval 10s --health-timeout 5s --health-retries 10
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_DATABASE: func
+          MARIADB_ROOT_PASSWORD: root
+        ports:
+          - 3307:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval 10s --health-timeout 5s --health-retries 10
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: func
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s --health-timeout 5s --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, pdo_mysql, mysqli, pdo_pgsql
+          coverage: none
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache composer
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Validate composer
+        run: composer validate --no-check-publish
+
+      - name: Install dependencies (TYPO3 ${{ matrix.typo3 }})
+        run: |
+          composer require --no-update "typo3/cms-core=${{ matrix.typo3 }}" "typo3/testing-framework:*"
+          composer update -W --no-interaction --prefer-dist --no-progress
+
+      - name: Run functional tests
+        run: |
+          if [ "${{ matrix.db }}" = "mysql" ]; then
+            export typo3DatabaseName=func
+            export typo3DatabaseUsername=root
+            export typo3DatabasePassword=root
+            export typo3DatabaseHost=127.0.0.1
+            export typo3DatabasePort=${{ job.services.mysql.ports[3306] }}
+            export typo3DatabaseDriver=pdo_mysql
+          elif [ "${{ matrix.db }}" = "mariadb" ]; then
+            export typo3DatabaseName=func
+            export typo3DatabaseUsername=root
+            export typo3DatabasePassword=root
+            export typo3DatabaseHost=127.0.0.1
+            export typo3DatabasePort=${{ job.services.mariadb.ports[3306] }}
+            export typo3DatabaseDriver=pdo_mysql
+          else
+            export typo3DatabaseName=func
+            export typo3DatabaseUsername=postgres
+            export typo3DatabasePassword=postgres
+            export typo3DatabaseHost=127.0.0.1
+            export typo3DatabasePort=${{ job.services.postgres.ports[5432] }}
+            export typo3DatabaseDriver=pdo_pgsql
+          fi
+          if [ -f .Build/vendor/autoload.php ]; then
+            composer run test:functional
+          else
+            echo "Skipping functional tests (no vendor installed)"
+          fi

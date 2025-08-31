@@ -8,7 +8,7 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Exception\InvalidFormat;
 use Doctrine\DBAL\Types\Exception\InvalidType;
 
-final class DateTimeType extends \Doctrine\DBAL\Types\DateTimeType
+final class DateTimeImmutableType extends \Doctrine\DBAL\Types\DateTimeImmutableType
 {
     /**
      * @throws InvalidType
@@ -18,35 +18,32 @@ final class DateTimeType extends \Doctrine\DBAL\Types\DateTimeType
         if (null === $value) {
             return null;
         }
-        if ($value instanceof \DateTime) {
+        if ($value instanceof \DateTimeImmutable) {
             $format = $platform->getDateTimeFormatString() . '.u';
 
             return $value->format($format);
         }
-        throw InvalidType::new($value, static::class, ['null', \DateTime::class]);
+        throw InvalidType::new($value, static::class, ['null', \DateTimeImmutable::class]);
     }
 
     /**
-     * @throws InvalidType|InvalidFormat
+     * @throws InvalidFormat|InvalidType
      */
-    public function convertToPHPValue(mixed $value, AbstractPlatform $platform): ?\DateTime
+    public function convertToPHPValue(mixed $value, AbstractPlatform $platform): ?\DateTimeImmutable
     {
-        if (null === $value) {
-            return null;
-        }
-        if ($value instanceof \DateTime) {
+        if (null === $value || $value instanceof \DateTimeImmutable) {
             return $value;
         }
         if (!is_string($value)) {
-            throw InvalidType::new($value, static::class, ['null', 'string', \DateTime::class]);
+            throw InvalidType::new($value, static::class, ['null', 'string', \DateTimeImmutable::class]);
         }
         $format = $platform->getDateTimeFormatString() . '.u';
-        $dateTime = \DateTime::createFromFormat($format, $value);
-        if ($dateTime instanceof \DateTime) {
+        $dateTime = \DateTimeImmutable::createFromFormat($format, $value);
+        if ($dateTime instanceof \DateTimeImmutable) {
             return $dateTime;
         }
         try {
-            return new \DateTime($value);
+            return new \DateTimeImmutable($value);
         } catch (\Throwable $e) {
             throw InvalidFormat::new($value, static::class, $format, $e);
         }

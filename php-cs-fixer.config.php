@@ -4,13 +4,13 @@ if (PHP_SAPI !== 'cli') {
     exit('This script supports command line usage only.');
 }
 
-// https://cs.symfony.com/doc/config.html
 $finder = PhpCsFixer\Finder::create()
     ->exclude('Resources')
     ->exclude('.Build')
+    ->exclude('public')
     ->name('*.php')
     ->in([
-        __DIR__ . '/../',
+        __DIR__ . '/',
     ]);
 
 $config = new PhpCsFixer\Config();
@@ -18,10 +18,8 @@ $config = new PhpCsFixer\Config();
 return $config->setRiskyAllowed(true)
     ->setRules([
         '@Symfony' => true,
-        // Changes from Symfony
         'concat_space' => ['spacing' => 'one'], // 'foo' . 'bar'
         'phpdoc_to_comment' => ['ignored_tags' => ['psalm-suppress']],
-        // Custom rules
         'align_multiline_comment' => ['comment_type' => 'phpdocs_like'],
         'array_push' => true,
         'combine_consecutive_issets' => true,
@@ -29,7 +27,11 @@ return $config->setRiskyAllowed(true)
         'declare_parentheses' => true,
         'dir_constant' => true,
         'ereg_to_preg' => true,
-        'escape_implicit_backslashes' => true,
+        'string_implicit_backslashes' => [
+            'single_quoted' => 'escape',
+            'double_quoted' => 'escape',
+            'heredoc' => 'escape',
+        ],
         'explicit_indirect_variable' => true,
         'explicit_string_variable' => true,
         'fopen_flags' => ['b_mode' => false],
@@ -57,8 +59,8 @@ return $config->setRiskyAllowed(true)
         'regular_callable_call' => true,
         'set_type_to_cast' => true,
         'simple_to_complex_string_variable' => true,
-        'simplified_null_return' => true,
+        'simplified_null_return' => false,
         'static_lambda' => true,
     ])
-    ->setCacheFile(__DIR__ . '/../.Build/php-cs-fixer.json')
+    ->setCacheFile(__DIR__ . '/.Build/php-cs-fixer.json')
     ->setFinder($finder);

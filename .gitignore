@@ -5,3 +5,4 @@ composer.lock
 *.swp
 .DS_Store
 /public
+/.phpunit.result.cache

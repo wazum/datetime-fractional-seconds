@@ -6,13 +6,13 @@ namespace Wazum\DatetimeFractionalSeconds\Core\Database\Types;
 
 readonly class AbstractDateTimeSqlDeclaration
 {
-    protected function getPrecision($value): int
+    protected function getPrecision(mixed $value): ?int
     {
         $precision = (int) $value;
-        if ($precision < 1 || $precision > 6) {
-            $precision = 0;
+        if ($precision >= 1 && $precision <= 6) {
+            return $precision;
         }
 
-        return $precision;
+        return null;
     }
 }

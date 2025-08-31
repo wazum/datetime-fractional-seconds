@@ -7,10 +7,10 @@ $EM_CONF['datetime_fractional_seconds'] = [
     'author_email' => 'wolfgang@wazum.com',
     'state' => 'stable',
     'author_company' => 'wazum',
-    'version' => '1.1.0',
+    'version' => '1.3.0',
     'constraints' => [
         'depends' => [
-            'typo3' => '10.4.13-12.9.99',
+            'typo3' => '12.4.0-13.9.99',
         ],
     ],
 ];

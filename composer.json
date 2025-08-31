@@ -15,29 +15,30 @@
   },
   "require": {
     "php": "^8.2",
-    "typo3/cms-core": "^11 || ^12"
+    "typo3/cms-core": "^12 || ^13"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.13",
     "slevomat/coding-standard": "^8.8",
     "squizlabs/php_codesniffer": "^3.7",
-    "vimeo/psalm": "^5.6"
+    "vimeo/psalm": "^5.6",
+    "typo3/testing-framework": "^7 || ^8"
   },
   "scripts": {
     "php-codesniffer": [
-      "./.Build/bin/phpcs -s --standard=./Build/php-codesniffer.xml"
+      "./.Build/bin/phpcs -s --standard=./php-codesniffer.xml"
     ],
     "php-codesniffer:fix": [
-      "./.Build/bin/phpcbf --standard=./Build/php-codesniffer.xml"
+      "./.Build/bin/phpcbf --standard=./php-codesniffer.xml"
     ],
     "php-cs-fixer": [
-      "./.Build/bin/php-cs-fixer fix --dry-run -v --diff --config=./Build/php-cs-fixer.config.php"
+      "./.Build/bin/php-cs-fixer fix --dry-run -v --diff --config=./php-cs-fixer.config.php"
     ],
     "php-cs-fixer:fix": [
-      "./.Build/bin/php-cs-fixer fix -v --config=./Build/php-cs-fixer.config.php"
+      "./.Build/bin/php-cs-fixer fix -v --config=./php-cs-fixer.config.php"
     ],
     "psalm": [
-      "./.Build/bin/psalm --config=./Build/psalm.xml"
+      "./.Build/bin/psalm --config=./psalm.xml"
     ],
     "lint": [
       "@psalm",
@@ -48,6 +49,9 @@
       "@psalm",
       "@php-cs-fixer:fix",
       "@php-codesniffer:fix"
+    ],
+    "test:functional": [
+      ".Build/bin/phpunit -c phpunit.functional.xml --colors=always"
     ]
   },
   "config": {

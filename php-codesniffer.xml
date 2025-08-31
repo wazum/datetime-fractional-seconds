@@ -2,14 +2,15 @@
 <ruleset name="OEZAK">
     <description>Additions to PSR12/Symfony not covered by Psalm and PHP Coding Standards Fixer</description>
 
-    <arg name="cache" value="../.Build/phpcs.json"/>
+    <arg name="cache" value=".Build/phpcs.json"/>
     <arg name="extensions" value="php"/>
     <arg name="error-severity" value="1"/>
     <arg name="warning-severity" value="1"/>
 
-    <file>../</file>
-    <exclude-pattern>/Build</exclude-pattern>
+    <file>./</file>
     <exclude-pattern>/.Build</exclude-pattern>
+    <exclude-pattern>/stubs</exclude-pattern>
+    <exclude-pattern>/public</exclude-pattern>
 
     <!-- PSR1 -->
     <rule ref="Generic.NamingConventions.UpperCaseConstantName"/>

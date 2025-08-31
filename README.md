@@ -1,7 +1,11 @@
 
 # DATETIME with fractional seconds support
 
+[![CI](https://github.com/wazum/datetime-fractional-seconds/actions/workflows/ci.yml/badge.svg)](https://github.com/wazum/datetime-fractional-seconds/actions/workflows/ci.yml)
+
 A TYPO3 custom Doctrine type for DATETIME with fractional seconds support.
+
+Compatible with TYPO3 12 LTS and 13 on PHP 8.2+.
 
 ## Use case
 

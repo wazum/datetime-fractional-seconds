@@ -1,0 +1,11 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  Wazum\DatetimeFractionalSeconds\Core\Database\ConnectionPool:
+    public: true
+
+  TYPO3\CMS\Core\Database\ConnectionPool:
+    alias: Wazum\DatetimeFractionalSeconds\Core\Database\ConnectionPool
+    public: true
